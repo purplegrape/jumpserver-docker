@@ -1,0 +1,16 @@
+[Unit]
+Description=JumpServer koko Service
+After=network-online.target
+ConditionFileIsExecutable=/usr/bin/koko
+ConditionPathExists=/etc/koko/config.yml
+
+[Service]
+User=fit2cloud
+Group=fit2cloud
+EnvironmentFile=-/etc/sysconfig/koko
+WorkingDirectory=/var/lib/koko
+ExecStart=/usr/bin/koko -f /etc/koko/config.yml
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

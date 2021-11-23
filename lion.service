@@ -1,0 +1,18 @@
+[Unit]
+Description=JumpServer Lion Service
+After=network-online.target
+ConditionFileIsExecutable=/usr/bin/lion
+ConditionPathExists=/etc/lion/config.yml
+
+[Service]
+Type=simple
+User=fit2cloud
+Group=fit2cloud
+WorkingDirectory=/var/lib/lion
+EnvironmentFile=-/etc/sysconfig/lion
+ExecStart=/usr/bin/lion -f /etc/lion/config.yml
+KillMode=process
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
