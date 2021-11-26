@@ -1,43 +1,41 @@
-FROM centos/systemd as build-stage-1
-ENV VERSION=v2.16.0
+FROM centos:8 as build-stage-1
+ENV VERSION=v2.16.1
 WORKDIR /usr/share
-RUN yum install -y git gcc gcc-c++ make mysql-devel postgresql-devel gd-devel openssl-devel openldap-devel protobuf-devel python3-pip python3-setuptools python3-devel && yum clean all
+RUN dnf install -y git gcc gcc-c++ make mysql-devel postgresql-devel gd-devel openssl-devel openldap-devel protobuf-c-devel python3-pip python3-setuptools python3-virtualenv python3-pillow python3-devel && dnf clean all
 RUN git clone -b $VERSION --depth=1 https://github.com/jumpserver/jumpserver jumpserver
-RUN echo -e "grpcio==1.33.1" >> jumpserver/requirements/requirements.txt
-RUN pip3 install --upgrade pip==20.2.4 setuptools==49.6.0 wheel==0.34.2 -i https://pypi.tuna.tsinghua.edu.cn/simple/
 RUN python3 -m venv jumpserver-python3-venv && source jumpserver-python3-venv/bin/activate && pip3 --no-cache-dir --disable-pip-version-check install -i https://pypi.tuna.tsinghua.edu.cn/simple/ -r jumpserver/requirements/requirements.txt
 
-FROM centos/systemd as build-stage-2
-ENV VERSION=v2.16.0
+FROM centos:8 as build-stage-2
+ENV VERSION=v2.16.1
 WORKDIR /usr/share
 RUN yum install -y git
 RUN git clone -b ${VERSION} --depth=1 https://github.com/jumpserver/lina jumpserver-lina
 
-FROM centos/systemd as build-stage-3
-ENV VERSION=v2.16.0
+FROM centos:8 as build-stage-3
+ENV VERSION=v2.16.1
 WORKDIR /usr/share
 RUN yum install -y git
 RUN git clone -b ${VERSION} --depth=1 https://github.com/jumpserver/luna jumpserver-luna
 
-FROM centos/systemd as build-stage-4
-ENV VERSION=v2.16.0
+FROM centos:8 as build-stage-4
+ENV VERSION=v2.16.1
 WORKDIR /var/lib
 RUN yum install -y wget
 RUN wget https://github.com/jumpserver/koko/releases/download/${VERSION}/koko-${VERSION}-linux-amd64.tar.gz
 RUN tar zxf koko-${VERSION}-linux-amd64.tar.gz && mv koko-${VERSION}-linux-amd64 koko && mv koko/koko /usr/bin/koko
 RUN mkdir -p koko/data && rm -rf koko/{config_example.yml,init-kubectl.sh,kubectl}
 
-FROM centos/systemd as build-stage-5
-ENV VERSION=v2.16.0
+FROM centos:8 as build-stage-5
+ENV VERSION=v2.16.1
 WORKDIR /var/lib
 RUN yum install -y wget
 RUN wget https://github.com/jumpserver/lion-release/releases/download/${VERSION}/lion-${VERSION}-linux-amd64.tar.gz
 RUN tar zxf lion-${VERSION}-linux-amd64.tar.gz && mv lion-${VERSION}-linux-amd64 lion && mv lion/lion /usr/bin/lion
 
-FROM centos/systemd
+FROM centos:8
 WORKDIR /usr/share
-RUN yum install -y epel-release
-RUN yum install -y mysql postgresql openldap python3-pip python3-setuptools gd sshpass initscripts chkconfig guacd nginx redis && yum clean all
+RUN dnf install -y epel-release
+RUN dnf install -y mysql postgresql gd openldap python3-pip python3-setuptools python3-virtualenv sshpass initscripts chkconfig guacd nginx redis && dnf clean all
 RUN systemctl enable nginx.service redis.service guacd.service
 
 COPY --from=build-stage-1 /usr/share/jumpserver-python3-venv /usr/share/jumpserver-python3-venv
@@ -64,6 +62,13 @@ RUN mkdir -p /etc/{jumpserver,koko,lion} /var/lib/{jumpserver,koko,lion} /var/lo
 RUN chown -R fit2cloud.fit2cloud /var/lib/{jumpserver,koko,lion} /var/log/{jumpserver,koko,lion} /usr/share/jumpserver 
 RUN chmod 755 /etc/rc.d/init.d/jumpserver
 RUN systemctl enable jumpserver.service koko.service lion.service
+
+VOLUME [ "/var/lib/jumpserver" ]
+VOLUME [ "/var/lib/koko" ]
+VOLUME [ "/var/lib/lion" ]
+VOLUME [ "/var/lib/redis" ]
+VOLUME [ "/usr/share/jumpserver/data" ]
+VOLUME [ "/usr/share/jumpserver/logs" ]
 
 EXPOSE 80
 CMD ["/usr/sbin/init"]
