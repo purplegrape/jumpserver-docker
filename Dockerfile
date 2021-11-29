@@ -8,14 +8,16 @@ RUN python3 -m venv jumpserver-python3-venv && source jumpserver-python3-venv/bi
 FROM centos:8 as build-stage-2
 ENV VERSION=v2.16.1
 WORKDIR /usr/share
-RUN yum install -y git
-RUN git clone -b ${VERSION} --depth=1 https://github.com/jumpserver/lina jumpserver-lina
+RUN yum install -y wget
+RUN wget https://github.com/jumpserver/lina/releases/download/${VERSION}/lina-${VERSION}.tar.gz
+RUN tar zxf lina-${VERSION}.tar.gz && mv lina-${VERSION} jumpserver-lina
 
 FROM centos:8 as build-stage-3
 ENV VERSION=v2.16.1
 WORKDIR /usr/share
-RUN yum install -y git
-RUN git clone -b ${VERSION} --depth=1 https://github.com/jumpserver/luna jumpserver-luna
+RUN yum install -y wget
+RUN wget https://github.com/jumpserver/luna/releases/download/${VERSION}/luna-${VERSION}.tar.gz
+RUN tar zxf luna-${VERSION}.tar.gz && mv luna-${VERSION} jumpserver-luna
 
 FROM centos:8 as build-stage-4
 ENV VERSION=v2.16.1
@@ -35,7 +37,7 @@ RUN tar zxf lion-${VERSION}-linux-amd64.tar.gz && mv lion-${VERSION}-linux-amd64
 FROM centos:8
 WORKDIR /usr/share
 RUN dnf install -y epel-release
-RUN dnf install -y mysql postgresql gd openldap python3-pip python3-setuptools python3-virtualenv sshpass initscripts chkconfig guacd nginx redis && dnf clean all
+RUN dnf install -y mysql postgresql gd openldap python3-pip python3-setuptools python3-virtualenv sshpass initscripts chkconfig guacd nginx redis wget && dnf clean all
 RUN systemctl enable nginx.service redis.service guacd.service
 
 COPY --from=build-stage-1 /usr/share/jumpserver-python3-venv /usr/share/jumpserver-python3-venv
@@ -57,6 +59,7 @@ COPY ./jumpserver.init /etc/rc.d/init.d/jumpserver
 
 RUN getent group  fit2cloud >/dev/null || groupadd -r fit2cloud
 RUN getent passwd fit2cloud >/dev/null || useradd -r -g fit2cloud -s /sbin/nologin -d /var/lib/jumpserver fit2cloud
+RUN wget https://download.jumpserver.org/files/GeoLite2-City.mmdb -O jumpserver/apps/common/utils/geoip/GeoLite2-City.mmdb
 RUN rm -rf jumpserver/apps/locale/zh/LC_MESSAGES/django.mo
 RUN mkdir -p /etc/{jumpserver,koko,lion} /var/lib/{jumpserver,koko,lion} /var/log/{jumpserver,koko,lion}
 RUN chown -R fit2cloud.fit2cloud /var/lib/{jumpserver,koko,lion} /var/log/{jumpserver,koko,lion} /usr/share/jumpserver 
