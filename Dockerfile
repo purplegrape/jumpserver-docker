@@ -1,40 +1,40 @@
-FROM centos:8 as build-stage-1
-ENV VERSION=v2.16.1
+FROM rockylinux:8.5 as build-stage-1
+ENV VERSION=v2.17.0
 WORKDIR /usr/share
 RUN dnf install -y git gcc gcc-c++ make mysql-devel postgresql-devel gd-devel openssl-devel openldap-devel protobuf-c-devel python3-pip python3-setuptools python3-virtualenv python3-pillow python3-devel && dnf clean all
 RUN git clone -b $VERSION --depth=1 https://github.com/jumpserver/jumpserver jumpserver
 RUN python3 -m venv jumpserver-python3-venv && source jumpserver-python3-venv/bin/activate && pip3 --no-cache-dir --disable-pip-version-check install -i https://pypi.tuna.tsinghua.edu.cn/simple/ -r jumpserver/requirements/requirements.txt
 
-FROM centos:8 as build-stage-2
-ENV VERSION=v2.16.1
+FROM rockylinux:8.5 as build-stage-2
+ENV VERSION=v2.17.0
 WORKDIR /usr/share
 RUN yum install -y wget
 RUN wget https://github.com/jumpserver/lina/releases/download/${VERSION}/lina-${VERSION}.tar.gz
 RUN tar zxf lina-${VERSION}.tar.gz && mv lina-${VERSION} jumpserver-lina
 
-FROM centos:8 as build-stage-3
-ENV VERSION=v2.16.1
+FROM rockylinux:8.5 as build-stage-3
+ENV VERSION=v2.17.0
 WORKDIR /usr/share
 RUN yum install -y wget
 RUN wget https://github.com/jumpserver/luna/releases/download/${VERSION}/luna-${VERSION}.tar.gz
 RUN tar zxf luna-${VERSION}.tar.gz && mv luna-${VERSION} jumpserver-luna
 
-FROM centos:8 as build-stage-4
-ENV VERSION=v2.16.1
+FROM rockylinux:8.5 as build-stage-4
+ENV VERSION=v2.17.0
 WORKDIR /var/lib
 RUN yum install -y wget
 RUN wget https://github.com/jumpserver/koko/releases/download/${VERSION}/koko-${VERSION}-linux-amd64.tar.gz
 RUN tar zxf koko-${VERSION}-linux-amd64.tar.gz && mv koko-${VERSION}-linux-amd64 koko && mv koko/koko /usr/bin/koko
 RUN mkdir -p koko/data && rm -rf koko/{config_example.yml,init-kubectl.sh,kubectl}
 
-FROM centos:8 as build-stage-5
-ENV VERSION=v2.16.1
+FROM rockylinux:8.5 as build-stage-5
+ENV VERSION=v2.17.0
 WORKDIR /var/lib
 RUN yum install -y wget
 RUN wget https://github.com/jumpserver/lion-release/releases/download/${VERSION}/lion-${VERSION}-linux-amd64.tar.gz
 RUN tar zxf lion-${VERSION}-linux-amd64.tar.gz && mv lion-${VERSION}-linux-amd64 lion && mv lion/lion /usr/bin/lion
 
-FROM centos:8
+FROM rockylinux:8.5
 WORKDIR /usr/share
 RUN dnf install -y epel-release
 RUN dnf install -y mysql postgresql gd openldap python3-pip python3-setuptools python3-virtualenv sshpass initscripts chkconfig guacd nginx redis wget && dnf clean all
