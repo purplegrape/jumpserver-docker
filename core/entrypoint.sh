@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -e -x
+set -x
 
 if [ ! -d /data/jumpserver ] ;then
   /usr/bin/rsync -aq --delete /opt/jumpserver/ /data/jumpserver/

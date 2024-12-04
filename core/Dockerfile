@@ -34,7 +34,7 @@ RUN django-admin compilemessages
 FROM docker.io/almalinux/9-minimal
 ENV  VERSION=v3.10.16
 ENV  PATH=/opt/py3/bin:$PATH
-WORKDIR /data/jumpserver
+WORKDIR /data
 
 COPY --from=build-stage-1 /opt/jumpserver /opt/jumpserver
 COPY --from=build-stage-2 /opt/py3 /opt/py3
