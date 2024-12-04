@@ -3,7 +3,6 @@ ENV  VERSION=v3.10.16
 WORKDIR /opt
 
 RUN microdnf makecache ;\
-    microdnf install -y epel-release ;\
     microdnf install -y --nodocs wget tar gzip rsync glibc-langpack-zh;\
     microdnf clean all
 RUN wget https://github.com/jumpserver/koko/releases/download/${VERSION}/koko-${VERSION}-linux-amd64.tar.gz ; \
