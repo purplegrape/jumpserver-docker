@@ -4,7 +4,7 @@ WORKDIR /opt
 
 RUN microdnf makecache ;\
     microdnf install -y epel-release ;\
-    microdnf install -y --nodocs wget tar rsync iproute procps-ng glibc-langpack-zh;\
+    microdnf install -y --nodocs wget tar gzip rsync glibc-langpack-zh;\
     microdnf clean all
 RUN wget https://github.com/jumpserver/koko/releases/download/${VERSION}/koko-${VERSION}-linux-amd64.tar.gz ; \
     tar zxvf koko-${VERSION}-linux-amd64.tar.gz ; \
@@ -14,7 +14,7 @@ RUN wget https://github.com/jumpserver/koko/releases/download/${VERSION}/koko-${
 FROM docker.io/almalinux/9-minimal
 WORKDIR /data/koko
 RUN microdnf makecache ;\
-    microdnf install -y --nodocs wget tar gzip rsync iproute procps-ng glibc-langpack-zh;\
+    microdnf install -y --nodocs wget tar gzip rsync glibc-langpack-zh;\
     microdnf clean all
 
 COPY --from=build /opt/koko /opt/koko
