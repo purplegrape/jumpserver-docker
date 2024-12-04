@@ -17,7 +17,7 @@ COPY --from=build /opt/luna /opt/luna
 ADD --chmod=644 nginx.conf /etc/nginx/
 ADD --chmod=755 entrypoint.sh /
 
-RUN microdnf install -y --nodocs rsync nginx-core; microdnf clean all
+RUN microdnf makecache; microdnf install -y --nodocs rsync nginx-core; microdnf clean all
 RUN ln -sf /dev/stderr /var/log/nginx/error.log
 RUN ln -sf /dev/stdout /var/log/nginx/access.log
 

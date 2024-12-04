@@ -34,7 +34,7 @@ RUN django-admin compilemessages
 FROM docker.io/almalinux/9-minimal
 ENV  VERSION=v3.10.16
 ENV  PATH=/opt/py3/bin:$PATH
-WORKDIR /data
+WORKDIR /data/jumpserver
 
 COPY --from=build-stage-1 /opt/jumpserver /opt/jumpserver
 COPY --from=build-stage-2 /opt/py3 /opt/py3
@@ -47,7 +47,6 @@ RUN microdnf makecache ;\
 
 ADD --chmod=755 entrypoint.sh /
 
-VOLUME     [ "/data" ]
 ENTRYPOINT [ "/entrypoint.sh" ]
 CMD        [ "/data/jumpserver/jms", "start"]
 EXPOSE     8080

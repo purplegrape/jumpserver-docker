@@ -12,17 +12,15 @@ RUN wget https://github.com/jumpserver/koko/releases/download/${VERSION}/koko-${
     rm -rf koko/{kubectl,helm}
 
 FROM docker.io/almalinux/9-minimal
-WORKDIR /data
+WORKDIR /data/koko
 RUN microdnf makecache ;\
     microdnf install -y --nodocs wget tar gzip rsync iproute procps-ng glibc-langpack-zh;\
     microdnf clean all
 
 COPY --from=build /opt/koko /opt/koko
-
 ADD --chmod=755 entrypoint.sh /
 
-VOLUME     [ "/data" ]
 ENTRYPOINT [ "/entrypoint.sh" ]
-CMD        [ "/data/koko/koko"]
+CMD        [ "/data/koko/koko" ]
 EXPOSE     2222
 EXPOSE     5000
