@@ -1,23 +1,25 @@
 # jumpserver-docker
-# => 一站式安装 jumpserver (基于sqlite)
+# => 一站式安装 jumpserver (基于podman)
 
 ## => 1、克隆代码
 ```
-yum install -y git  || apt install git -y
-git clone https://github.com/purplegrape/jumpserver-docker
+yum install -y git podman podman-docker
+git clone -b v3.10 https://github.com/purplegrape/jumpserver-docker
 cd jumpserver-docker
 ```
 
-## => 2、修改 Dockerfile 中的版本号，并构建docker镜像  
+## => 2、构建docker镜像  
 ```
-docker build -t jumpserver .  
+参考 build.md
+
 ```
-## => 3、运行docker  
+## => 3、首次使用
 ```
-docker run -d --privileged -e "container=docker" -p 80:80 jumpserver  
+参考 first.md
+
 ```
   
-## => 4、测试
+## => 4、运行
 ```
-echo -e "at your own risk"  
+参考 install.md
 ```  
