@@ -1,6 +1,3 @@
-# Save the output of this file and use kubectl create -f to import
-# it into Kubernetes.
-#
 # Created with podman-4.9.4-rhel
 apiVersion: v1
 kind: Pod
@@ -11,40 +8,40 @@ metadata:
   name: jms
 spec:
   containers:
-  - args:
-    - redis-server
+  - name: redis
     image: docker.io/jumpserver/redis:7.2
-    name: redis
+    args:
+    - redis-server
     ports:
     - containerPort: 80
       hostPort: 80
     volumeMounts:
-    - mountPath: /data
-      name: data-host-0
-  - args:
+    - name: data-host-0
+      mountPath: /data
+  - name: jms-core
+    image: localhost/jumpserver/core:20241204
+    args:
     - /data/jumpserver/jms
     - start
-    image: localhost/jumpserver/core:20241204
-    name: jms-core
     volumeMounts:
-    - mountPath: /data
-      name: data-host-0
-  - args:
-    - /data/koko/koko
+    - name: data-host-0
+      mountPath: /data
+  - name: jms-koko
     image: localhost/jumpserver/koko:20241204
-    name: jms-koko
+    args:
+    - /data/koko/koko  
     volumeMounts:
-    - mountPath: /data
-      name: data-host-0
-  - args:
-    - /usr/sbin/nginx
+    - name: data-host-0
+      mountPath: /data
+  - name: jms-web
     image: localhost/jumpserver/web:20241204
-    name: jms-web
+    args:
+    - /usr/sbin/nginx
     volumeMounts:
-    - mountPath: /data
-      name: data-host-0
+    - name: data-host-0
+      mountPath: /data
   volumes:
-  - hostPath:
-      path: /data
+  - name: data-host-0
+    hostPath:
       type: Directory
-    name: data-host-0
+      path: /data
