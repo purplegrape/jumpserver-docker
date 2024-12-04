@@ -26,6 +26,8 @@ RUN pip3.11 install -U pip virtualenv
 RUN python3.11 -m venv /opt/py3
 RUN pip3.11 install -U pip; pip3.11 install poetry==1.8.3
 RUN poetry config virtualenvs.create false  ; . /opt/py3/bin/activate ; poetry install
+RUN rm -rf apps/locale/zh/LC_MESSAGES/django.mo apps/locale/en/LC_MESSAGES/django.mo
+RUN django-admin compilemessages
 
 ########################################################
 # final
@@ -39,7 +41,7 @@ COPY --from=build-stage-2 /opt/py3 /opt/py3
 
 RUN microdnf makecache ;\
     microdnf install -y epel-release ;\
-    microdnf install -y --nodocs wget tar rsync iproute gettext openssh-clients sshpass procps-ng glibc-langpack-zh;\
+    microdnf install -y --nodocs wget tar rsync iproute gettext openssh-clients sshpass procps-ng glibc-langpack-zh vim-minimal;\
     microdnf install -y --nodocs python3.11 python3.11-pip python3.11-setuptools;\
     microdnf clean all
 

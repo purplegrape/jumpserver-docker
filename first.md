@@ -13,3 +13,11 @@
 /data/nginx/*  
 ```
 
+#### 初始化 jumpserver core
+
+```
+cd /data/jumpserver
+rm -f apps/locale/zh/LC_MESSAGES/django.mo
+python3 apps/manage.py compilemessages
+
+```
