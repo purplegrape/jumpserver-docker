@@ -25,7 +25,6 @@ RUN microdnf makecache ;\
 COPY --from=build-stage-1 /opt/jumpserver /opt/jumpserver
 RUN python3.11 -m venv /opt/py3
 RUN . /opt/py3/bin/activate; pip3.11 install -U pip setuptools; pip3.11 install --no-cache-dir -r /opt/jumpserver/requirements.txt
-RUN chown -R nobody:nobody py3; zip -qr py3.zip py3
 
 ########################################################
 
@@ -34,11 +33,11 @@ ENV VIRTUAL_ENV=/opt/py3
 ENV PATH=/opt/py3/bin:$PATH
 
 COPY --from=build-stage-1 /opt/jumpserver.zip /opt/jumpserver.zip
-COPY --from=build-stage-2 /opt/py3.zip /opt/py3.zip
+COPY --from=build-stage-2 /opt/py3 /opt/py3
 
 RUN microdnf makecache ;\
-    microdnf install -y --nodocs wget tar gzip zip unzip rsync iproute gettext openssh-clients sshpass procps-ng glibc-langpack-zh vim-minimal;\
-    microdnf install -y --nodocs python3.11 python3.11-pip python3.11-setuptools;\
+    microdnf install -y --nodocs unzip rsync gettext openssh-clients sshpass iproute procps-ng glibc-langpack-zh vim-minimal;\
+    microdnf install -y --nodocs python3.11 python3.11-pip python3.11-setuptools;\ 
     microdnf clean all
 
 ADD --chmod=755 entrypoint.sh /
