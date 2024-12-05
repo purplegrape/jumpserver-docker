@@ -41,7 +41,7 @@ RUN microdnf makecache ;\
 ADD --chmod=755 entrypoint.sh /
 
 USER root
-WORKDIR /data/jumpserver
+WORKDIR /data
 ENTRYPOINT [ "/entrypoint.sh" ]
 
 USER nobody
