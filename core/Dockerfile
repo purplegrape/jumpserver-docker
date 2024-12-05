@@ -39,12 +39,11 @@ RUN microdnf makecache ;\
     microdnf clean all
 
 ADD --chmod=755 entrypoint.sh /
+VOLUME [ "/data" ]
 
 USER root
-WORKDIR /data
 ENTRYPOINT [ "/entrypoint.sh" ]
 
 USER nobody
-WORKDIR /data/jumpserver
 CMD [ "/data/jumpserver/jms", "start"]
 EXPOSE 8080
