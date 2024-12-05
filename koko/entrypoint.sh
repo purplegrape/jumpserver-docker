@@ -3,13 +3,13 @@
 set -x
 
 if [ ! -d /data/koko ];then
+    cp -a /opt/koko /data/koko
+    mv /data/koko/config_example.yml /data/koko/config.yml
+fi
 
-cp -a /opt/koko /data/koko
-cat >/data/koko/config.yml <<EOF
-CORE_HOST: http://127.0.0.1:8080
-BOOTSTRAP_TOKEN: <PleaseChangeSameWithJumpserver>
-EOF
-
+if [ $# == '0' ];then
+    cd /data/koko
+    exec /data/koko/koko
 fi
 
 exec $@

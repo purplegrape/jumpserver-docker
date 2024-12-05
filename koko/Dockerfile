@@ -20,6 +20,5 @@ COPY --from=build /opt/koko /opt/koko
 ADD --chmod=755 entrypoint.sh /
 
 ENTRYPOINT [ "/entrypoint.sh" ]
-CMD        [ "/data/koko/koko" ]
 EXPOSE     2222
 EXPOSE     5000
