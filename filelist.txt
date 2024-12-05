@@ -1,0 +1,4 @@
+https://github.com/jumpserver/jumpserver/releases/download/v3.10.16/jumpserver-v3.10.16.tar.gz
+https://github.com/jumpserver/koko/releases/download/v3.10.16/koko-v3.10.16-linux-amd64.tar.gz
+https://github.com/jumpserver/lina/releases/download/v3.10.16/lina-v3.10.16.tar.gz
+https://github.com/jumpserver/luna/releases/download/v3.10.16/luna-v3.10.16.tar.gz
