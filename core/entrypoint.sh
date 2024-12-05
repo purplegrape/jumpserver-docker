@@ -2,13 +2,18 @@
 
 set -x
 
+if [ ! -d /opt/py3 ];then
+    cd /opt
+    unzip -qn /opt/py3.zip
+fi
+
 if [ ! -d /data/jumpserver ];then
-  /usr/bin/rsync -aq --delete /opt/jumpserver/ /data/jumpserver/
-  cd /data/jumpserver
-  . /opt/py3/bin/activate
-  rm -rf apps/locale/zh/LC_MESSAGES/django.mo apps/locale/en/LC_MESSAGES/django.mo
-  django-admin compilemessages
-  chown -R nobody:nobody /data/jumpserver
+    unzip -qn /opt/jumpserver.zip
+    cd /data/jumpserver
+    . /opt/py3/bin/activate
+    rm -rf apps/locale/zh/LC_MESSAGES/django.mo apps/locale/en/LC_MESSAGES/django.mo
+    django-admin compilemessages
+    chown -R nobody:nobody /data/jumpserver
 fi
 
 exec $@
