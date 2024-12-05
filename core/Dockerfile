@@ -1,59 +1,50 @@
-#download
-FROM docker.io/library/debian:12-slim as build-stage-1
-ENV VERSION=v3.10.16
-WORKDIR /data
+FROM docker.io/almalinux/9-minimal as build-stage-1
+RUN microdnf makecache ;\
+    microdnf install -y --nodocs epel-release wget tar gzip gettext openssh-clients sshpass procps-ng glibc-langpack-zh vim-minimal;\
+    microdnf install -y --nodocs gcc gcc-c++ make automake autoconf libtool mariadb-devel postgresql-devel freerdp-devel openldap-devel openssl-devel libxml2-devel xmlsec1-openssl-devel --enablerepo=crb;\ 
+    microdnf install -y --nodocs python3.11-devel python3.11-pip python3.11-setuptools;\
+    microdnf clean all
 
-RUN DEBIAN_FRONTEND=noninteractive apt update; \
-    DEBIAN_FRONTEND=noninteractive apt install -y wget tar gzip ;\
-    DEBIAN_FRONTEND=noninteractive apt-get autoclean
-
-RUN wget https://github.com/jumpserver/jumpserver/releases/download/${VERSION}/jumpserver-${VERSION}.tar.gz
-RUN tar zxvf jumpserver-${VERSION}.tar.gz -C /opt ; mv /opt/jumpserver-${VERSION} /opt/jumpserver
+RUN wget https://github.com/jumpserver/jumpserver/releases/download/v3.10.16/jumpserver-v3.10.16.tar.gz 
+RUN tar zxvf jumpserver-*.tar.gz -C /opt ; mv /opt/jumpserver-* /opt/jumpserver; 
+RUN pip3.11 install poetry==1.8.3
+RUN cd /opt/jumpserver; poetry export --without-hashes --output requirements.txt
+RUN chown -R nobody:nobody /opt/jumpserver
 
 ########################################################
 
-FROM docker.io/library/debian:12-slim as build-stage-2
-ENV VERSION=v3.10.16
-ENV PATH=/opt/py3/bin:$PATH
-WORKDIR /opt/jumpserver
-
+FROM docker.io/almalinux/9-minimal AS build-stage-2
+RUN microdnf makecache ;\
+    microdnf install -y --nodocs epel-release wget tar gzip gettext openssh-clients sshpass procps-ng glibc-langpack-zh vim-minimal;\
+    microdnf install -y --nodocs gcc gcc-c++ make automake autoconf libtool mariadb-devel postgresql-devel freerdp-devel openldap-devel openssl-devel libxml2-devel xmlsec1-openssl-devel --enablerepo=crb;\ 
+    microdnf install -y --nodocs python3.11-devel python3.11-pip python3.11-setuptools;\
+    microdnf clean all
 
 COPY --from=build-stage-1 /opt/jumpserver /opt/jumpserver
-
-# devel libs
-RUN DEBIAN_FRONTEND=noninteractive apt update; \
-    DEBIAN_FRONTEND=noninteractive apt install -y g++ make iputils-ping default-libmysqlclient-dev libpq-dev \
-        libffi-dev libldap2-dev libsasl2-dev openssh-client sshpass pkg-config libxml2-dev \
-        libxmlsec1-dev libxmlsec1-openssl libaio-dev freetds-dev freerdp2-dev \
-        python3.11-dev python3-pip python3-venv
-
 RUN python3.11 -m venv /opt/py3
-RUN pip3.11 install -U pip; pip3.11 install poetry==1.8.3
-
-#RUN poetry export --without-hashes --output requirements.txt
-#RUN . /opt/py3/bin/activate; pip3.11 install --no-cache-dir -r requirements.txt
-
-RUN poetry config virtualenvs.create false  ; . /opt/py3/bin/activate ; poetry install
-#RUN rm -rf apps/locale/zh/LC_MESSAGES/django.mo apps/locale/en/LC_MESSAGES/django.mo
-#RUN django-admin compilemessages
+RUN . /opt/py3/bin/activate; pip3.11 install -U pip setuptools; pip3.11 install --no-cache-dir -r /opt/jumpserver/requirements.txt
 
 ########################################################
-# final
-FROM docker.io/library/debian:12-slim
-ENV  VERSION=v3.10.16
-ENV  PATH=/opt/py3/bin:$PATH
-WORKDIR /data
+
+FROM docker.io/almalinux/9-minimal
+ENV VIRTUAL_ENV=/opt/py3
+ENV PATH=/opt/py3/bin:$PATH
 
 COPY --from=build-stage-1 /opt/jumpserver /opt/jumpserver
 COPY --from=build-stage-2 /opt/py3 /opt/py3
 
-RUN DEBIAN_FRONTEND=noninteractive apt update;\
-    DEBIAN_FRONTEND=noninteractive apt install -y python3-minimal python3-pip ;\
-    DEBIAN_FRONTEND=noninteractive apt-get autoclean
+RUN microdnf makecache ;\
+    microdnf install -y --nodocs wget tar gzip rsync iproute gettext openssh-clients sshpass procps-ng glibc-langpack-zh vim-minimal;\
+    microdnf install -y --nodocs python3.11 python3.11-pip python3.11-setuptools;\
+    microdnf clean all
 
 ADD --chmod=755 entrypoint.sh /
 
-USER nobody
+USER root
+WORKDIR /data/jumpserver
 ENTRYPOINT [ "/entrypoint.sh" ]
-CMD        [ "/data/jumpserver/jms", "start"]
-EXPOSE     8080
+
+USER nobody
+WORKDIR /data/jumpserver
+CMD [ "/data/jumpserver/jms", "start"]
+EXPOSE 8080
