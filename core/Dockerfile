@@ -7,7 +7,7 @@ RUN microdnf makecache ;\
     microdnf clean all
 
 RUN wget https://github.com/jumpserver/jumpserver/releases/download/v3.10.16/jumpserver-v3.10.16.tar.gz 
-RUN tar zxvf jumpserver-*.tar.gz ; mv jumpserver-* jumpserver; chown -R nobody:nobody jumpserver
+RUN tar zxvf jumpserver-*.tar.gz ; mv jumpserver-v3.10.16 jumpserver; chown -R nobody:nobody jumpserver
 RUN pip3.11 install poetry==1.8.3
 RUN cd jumpserver; poetry export --without-hashes --output requirements.txt
 RUN zip -qr jumpserver.zip jumpserver
