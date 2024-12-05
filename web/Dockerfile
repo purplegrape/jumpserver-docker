@@ -8,7 +8,7 @@ RUN microdnf makecache ;\
 RUN wget https://github.com/jumpserver/lina/releases/download/v3.10.16/lina-v3.10.16.tar.gz \
          https://github.com/jumpserver/luna/releases/download/v3.10.16/luna-v3.10.16.tar.gz ;
 RUN tar zxvf lina-${VERSION}.tar.gz ; tar zxvf luna-${VERSION}.tar.gz ; rm -rf *.tar.gz
-RUN mv luna-* luna ;mv lina-* ui
+RUN mv luna-* luna ;mv lina-* lina
 
 FROM docker.io/almalinux/9-minimal
 WORKDIR /data
