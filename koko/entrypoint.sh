@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
 
-set -e -x
+set -x
 
-if [ ! -d /data/koko ] ;then
-  /usr/bin/rsync -aqu /opt/koko/ /data/koko/
+if [ ! -d /data/koko ];then
+  cp -a /opt/koko /data/koko
+  mv /data/koko/config_example.yml /data/koko/config.yml
 fi
 
 exec $@

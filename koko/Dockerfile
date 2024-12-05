@@ -11,7 +11,7 @@ RUN wget https://github.com/jumpserver/koko/releases/download/${VERSION}/koko-${
     rm -rf koko/{kubectl,helm}
 
 FROM docker.io/almalinux/9-minimal
-WORKDIR /data/koko
+WORKDIR /data
 RUN microdnf makecache ;\
     microdnf install -y --nodocs wget tar gzip rsync glibc-langpack-zh;\
     microdnf clean all
