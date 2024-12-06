@@ -6,6 +6,6 @@ basedir=`dirname $0`
 
 cd $basedir
 
-podman build -t jumpserver/koko:$TS .
+podman build -t jumpserver/koko:v3.10.16-$TS .
 
 exit 0
