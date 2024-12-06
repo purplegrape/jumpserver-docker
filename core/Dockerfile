@@ -36,7 +36,7 @@ COPY --from=build-stage-1 /opt/jumpserver.zip /opt/jumpserver.zip
 COPY --from=build-stage-2 /opt/py3 /opt/py3
 
 RUN microdnf makecache ;\
-    microdnf install -y --nodocs unzip rsync gettext openssh-clients sshpass iproute procps-ng glibc-langpack-zh vim-minimal;\
+    microdnf install -y --nodocs unzip rsync gettext mariadb openldap openssh-clients sshpass iproute procps-ng glibc-langpack-zh vim-minimal;\
     microdnf install -y --nodocs python3.11 python3.11-pip python3.11-setuptools;\ 
     microdnf clean all
 
