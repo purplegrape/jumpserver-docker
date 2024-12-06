@@ -44,5 +44,5 @@ ADD --chmod=755 entrypoint.sh /
 
 WORKDIR /data
 ENTRYPOINT [ "/entrypoint.sh" ]
-CMD [ "/data/jumpserver/jms", "start"]
+CMD [ "/data/jumpserver/jms", "start", "all" ]
 EXPOSE 8080
