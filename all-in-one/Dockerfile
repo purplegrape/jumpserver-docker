@@ -5,7 +5,7 @@ ENV PATH=/opt/py3/bin:$PATH
 WORKDIR /opt
 RUN microdnf makecache ;\
     microdnf install -y epel-release wget tar gzip zip unzip gettext openssh-clients sshpass procps-ng glibc-langpack-zh vim-minimal;\
-    microdnf install -y gcc gcc-c++ make automake autoconf libtool mariadb-devel postgresql-devel freerdp-devel openldap-devel openssl-devel;\
+    microdnf install -y --enablereo=crb gcc gcc-c++ make automake autoconf libtool mariadb-devel postgresql-devel freerdp-devel openldap-devel openssl-devel;\
     microdnf install -y python3.11-devel python3.11-pip python3.11-setuptools;\
     microdnf clean all
 
