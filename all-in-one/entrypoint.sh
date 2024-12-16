@@ -65,4 +65,5 @@ EOF
     chown -R nobody:nobody /data/lion/data
 fi
 
+cd /data
 exec $@

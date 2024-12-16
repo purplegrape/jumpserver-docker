@@ -19,7 +19,8 @@ RUN mv jumpserver-${VERSION} jumpserver; \
     mv koko-${VERSION}-linux-amd64 koko; \
     mv lina-${VERSION} lina; \
     mv lion-${VERSION}-linux-amd64 lion; \
-    mv luna-${VERSION} luna;
+    mv luna-${VERSION} luna;\
+    rm -rf koko/{kubectl,helm}
 
 RUN python3.11 -m venv /opt/py3
 RUN . /opt/py3/bin/activate; pip3.11 install -U pip setuptools; pip3.11 install poetry==1.8.3
@@ -46,7 +47,6 @@ ADD --chmod=755 entrypoint.sh /
 RUN ln -sf /dev/stderr /var/log/nginx/error.log
 RUN ln -sf /dev/stdout /var/log/nginx/access.log
 
-WORKDIR /data
 ENTRYPOINT [ "/entrypoint.sh" ]
 CMD        [ "/usr/bin/supervisord", "-n" ]
 EXPOSE     80
