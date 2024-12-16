@@ -61,7 +61,8 @@ if [ ! -d /data/lion ];then
 CORE_HOST: http://127.0.0.1:8080
 BOOTSTRAP_TOKEN: $BOOTSTRAP_TOKEN
 EOF
-    chown -R nobody:nobody /data/lion
+    mkdir -p /data/lion/data
+    chown -R nobody:nobody /data/lion/data
 fi
 
 exec $@
