@@ -15,10 +15,15 @@ RUN wget https://github.com/jumpserver/jumpserver/releases/download/${VERSION}/j
          https://github.com/jumpserver/koko/releases/download/${VERSION}/koko-${VERSION}-linux-amd64.tar.gz \
          https://github.com/jumpserver/lion/releases/download/${VERSION}/lion-${VERSION}-linux-amd64.tar.gz
 RUN for i in `ls *.tar.gz`;do tar zxvf $i;rm -rf $i;done
+RUN mv jumpserver-${VERSION} jumpserver; \
+    mv koko-${VERSION}-linux-amd64 koko; \
+    mv lina-${VERSION} lina; \
+    mv lion-${VERSION}-linux-amd64 lion; \
+    mv luna-${VERSION} luna;
 
 RUN python3.11 -m venv /opt/py3
 RUN . /opt/py3/bin/activate; pip3.11 install -U pip setuptools; pip3.11 install poetry==1.8.3
-RUN cd /opt/jumpserver-${VERSION}; /opt/py3/bin/poetry config virtualenvs.create false; /opt/py3/bin/poetry install
+RUN cd /opt/jumpserver; /opt/py3/bin/poetry config virtualenvs.create false; /opt/py3/bin/poetry install
 
 ## ----------------------------------------------------------
 FROM docker.io/almalinux/9-minimal
@@ -29,12 +34,10 @@ ENV PATH=/opt/py3/bin:$PATH
 RUN microdnf module enable -y nginx:1.24 redis:7; \
     microdnf install -y epel-release ; microdnf makecache ;\
     microdnf install -y --nodocs wget tar gzip rsync gettext mariadb openldap openssh-clients sshpass freerdp lrzsz iproute procps-ng glibc-langpack-zh vim-minimal;\
-    microdnf install -y --nodocs python3.11 python3.11-pip python3.11-setuptools supervisor;\
+    microdnf install -y --nodocs python3.11 python3.11-pip python3.11-setuptools supervisor nginx-core redis;\
     microdnf clean all
 
 COPY --from=build-stage-1 /opt /opt
-
-RUN microdnf makecache; microdnf install -y --nodocs python3.11 rsync nginx-core redis; microdnf clean all
 
 ADD --chmod=644 nginx.conf /etc/nginx/
 ADD --chmod=644 supervisord.conf /etc/
