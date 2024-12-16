@@ -1,6 +1,7 @@
 FROM docker.io/almalinux/9-minimal AS build-stage-1
 ENV VERSION=v3.10.16
 ENV VIRTUAL_ENV=/opt/py3
+ENV PATH=/opt/py3/bin:$PATH
 WORKDIR /opt
 RUN microdnf makecache ;\
     microdnf install -y epel-release wget tar gzip zip unzip gettext openssh-clients sshpass procps-ng glibc-langpack-zh vim-minimal;\
@@ -17,7 +18,7 @@ RUN for i in `ls *.tar.gz`;do tar zxvf $i;rm -rf $i;done
 
 RUN python3.11 -m venv /opt/py3
 RUN . /opt/py3/bin/activate; pip3.11 install -U pip setuptools; pip3.11 install poetry==1.8.3
-RUN cd /opt/jumpserver-${VERSION}; poetry config virtualenvs.create false; poetry install
+RUN cd /opt/jumpserver-${VERSION}; /opt/py3/bin/poetry config virtualenvs.create false; /opt/py3/bin/poetry install
 
 ## ----------------------------------------------------------
 FROM docker.io/almalinux/9-minimal
