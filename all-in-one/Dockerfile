@@ -47,6 +47,7 @@ ADD --chmod=755 entrypoint.sh /
 RUN ln -sf /dev/stderr /var/log/nginx/error.log
 RUN ln -sf /dev/stdout /var/log/nginx/access.log
 
+WORKDIR    /data
 ENTRYPOINT [ "/entrypoint.sh" ]
 CMD        [ "/usr/bin/supervisord", "-n" ]
 EXPOSE     80

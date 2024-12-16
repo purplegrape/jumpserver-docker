@@ -5,17 +5,18 @@ set -e -x
 SECRET_KEY=$(head -c100 < /dev/urandom | base64 | tr -dc A-Za-z0-9 | head -c 48)
 BOOTSTRAP_TOKEN=$(head -c10 < /dev/urandom | base64 | tr -dc A-Za-z0-9 | head -c 48)
 
-if [ -d /data/nginx ] ;then
+if [ ! -d /data/nginx ] ;then
+    /usr/bin/rsync -aq --delete /etc/nginx/ /data/nginx/
+else
     /usr/bin/rsync -aq --delete /data/nginx/ /etc/nginx/
-    mkdir -p /data/wwwlogs
 fi
 
-if [ -d /data/redis ] ;then
+if [ ! -d /data/redis ] ;then
     mkdir -p /data/redis
     chown -R redis:redis /data/redis
 fi
 
-if [ -d /data/guacd ] ;then
+if [ ! -d /data/guacd ] ;then
     mkdir -p /data/guacd
     chown -R guacd:guacd /data/guacd
 fi
