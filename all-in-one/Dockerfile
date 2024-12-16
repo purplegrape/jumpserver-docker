@@ -26,7 +26,7 @@ ENV VERSION=v3.10.16
 ENV VIRTUAL_ENV=/opt/py3
 ENV PATH=/opt/py3/bin:$PATH
 
-RUN microdnf module enable nginx:1.24 mariadb:10.11 redis:7; \
+RUN microdnf module enable -y nginx:1.24 redis:7; \
     microdnf install -y epel-release ; microdnf makecache ;\
     microdnf install -y --nodocs wget tar gzip rsync gettext mariadb openldap openssh-clients sshpass freerdp lrzsz iproute procps-ng glibc-langpack-zh vim-minimal;\
     microdnf install -y --nodocs python3.11 python3.11-pip python3.11-setuptools supervisor;\
