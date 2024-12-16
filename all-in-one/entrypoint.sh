@@ -7,6 +7,17 @@ BOOTSTRAP_TOKEN=$(head -c10 < /dev/urandom | base64 | tr -dc A-Za-z0-9 | head -c
 
 if [ -d /data/nginx ] ;then
     /usr/bin/rsync -aq --delete /data/nginx/ /etc/nginx/
+    mkdir -p /data/wwwlogs
+fi
+
+if [ -d /data/redis ] ;then
+    mkdir -p /data/redis
+    chown -R redis:redis /data/redis
+fi
+
+if [ -d /data/guacd ] ;then
+    mkdir -p /data/guacd
+    chown -R guacd:guacd /data/guacd
 fi
 
 if [ ! -d /data/jumpserver ] ;then
@@ -36,13 +47,21 @@ fi
 
 if [ ! -d /data/koko ];then
     rsync -aq --delete /opt/koko/ /data/koko/
-    mv /data/koko/config_example.yml /data/koko/config.yml
+    cat > /data/koko/config.yml <<EOF
+CORE_HOST: http://127.0.0.1:8080
+BOOTSTRAP_TOKEN: $BOOTSTRAP_TOKEN
+EOF
+    mkdir -p /data/koko/data
+    chown -R nobody:nobody /data/koko/data
 fi
 
 if [ ! -d /data/lion ];then
     rsync -aq --delete /opt/lion/ /data/lion/
+    cat > /data/lion/config.yml <<EOF
+CORE_HOST: http://127.0.0.1:8080
+BOOTSTRAP_TOKEN: $BOOTSTRAP_TOKEN
+EOF
+    chown -R nobody:nobody /data/lion
 fi
-
-mkdir -p /data/wwwlogs
 
 exec $@
