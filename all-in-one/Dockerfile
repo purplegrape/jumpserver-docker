@@ -1,7 +1,6 @@
 FROM docker.io/almalinux/9-minimal AS build-stage-1
 ENV VERSION=v3.10.16
 ENV VIRTUAL_ENV=/opt/py3
-ENV PATH=/opt/py3/bin:$PATH
 WORKDIR /opt
 RUN microdnf makecache ;\
     microdnf install -y epel-release wget tar gzip zip unzip gettext openssh-clients sshpass procps-ng glibc-langpack-zh vim-minimal;\
