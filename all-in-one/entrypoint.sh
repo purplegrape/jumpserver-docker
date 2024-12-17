@@ -32,10 +32,10 @@ if [ ! -d /data/jumpserver ] ;then
 SECRET_KEY: $SECRET_KEY
 BOOTSTRAP_TOKEN: $BOOTSTRAP_TOKEN
 DB_ENGINE: mysql
-DB_HOST: mysql
+DB_HOST: 127.0.0.1
 DB_PORT: 3306
 DB_USER: jumpserver
-DB_PASSWORD:
+DB_PASSWORD: my_cool_secret
 DB_NAME: jumpserver
 
 HTTP_BIND_HOST: 127.0.0.1
