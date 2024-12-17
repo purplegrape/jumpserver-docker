@@ -27,7 +27,7 @@ if [ ! -d /data/jumpserver ] ;then
     cd /data/jumpserver
     rm -rf apps/locale/zh/LC_MESSAGES/django.mo apps/locale/en/LC_MESSAGES/django.mo
     django-admin compilemessages
-    chown -R nobody:nobody data tmp
+    chown -R nobody:nobody data tmp apps/common/utils/ip
     cat > /data/jumpserver/config.yml <<EOF
 SECRET_KEY: $SECRET_KEY
 BOOTSTRAP_TOKEN: $BOOTSTRAP_TOKEN
